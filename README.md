@@ -27,7 +27,7 @@ ilp-spsp query -r "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d
 #   }
 # } 
 
-ilp-spsp -r "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d525" -a 10000
+ilp-spsp invoice -r "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d525"
 # paying invoice at "$invoices.localtunnel.me/84e17e20-0391-4c00-8af7-b0d91c2aaa07"...
 # WARNING: PSK2 Chunked Payments are experimental. Money can be lost if an error occurs mid-payment or if the exchange rate changes dramatically! This should not be used for payments that are significantly larger than the path's Maximum Payment Size.
 # paid!
