@@ -1,4 +1,5 @@
 const Koa = require('koa')
+const fetch = require('node-fetch')
 const router = require('koa-router')()
 const parser = require('koa-bodyparser')()
 const app = new Koa()
@@ -12,10 +13,12 @@ const chalk = require('chalk')
 class Invoice {
   constructor ({
     reason,
-    amount
+    amount,
+    webhook
   }) {
     this.reason = reason
     this.amount = Number(amount)
+    this.webhook = webhook
     this.balance = 0
     this.id = uuid()
   }
@@ -43,6 +46,21 @@ async function run () {
       }
 
       invoice.balance += Number(params.prepare.amount)
+
+      if (invoice.balance >= invoice.amount && invoice.webhook) {
+        fetch(invoice.webhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            balance: invoice.balance,
+            amount: invoice.amount,
+            pointer: invoice.pointer()
+          })
+        }).catch(e => {
+          console.error('failed to post to webhook. error=', e)
+        })
+      }
+
       return params.acceptSingleChunk()
     }
   })
@@ -76,8 +94,8 @@ async function run () {
   })
 
   router.post('/', async ctx => {
-    const { amount, reason } = ctx.request.body
-    const invoice = new Invoice({ amount, reason })
+    const { amount, reason, webhook } = ctx.request.body
+    const invoice = new Invoice({ amount, reason, webhook })
 
     invoices.set(invoice.id, invoice)
     ctx.body = {
