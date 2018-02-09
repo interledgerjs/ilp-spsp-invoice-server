@@ -31,6 +31,14 @@ class Invoice {
 async function run () {
   await plugin.connect()
 
+  const token = process.env.AUTH_TOKEN
+  const authorize = ctx => {
+    const [ , givenToken ] = ctx.get('authorization').match(/Bearer (.+?)/) || []
+    if (token && givenToken !== token) {
+      return ctx.throw(401)
+    }
+  }
+
   const invoices = new Map()
   const receiver = await PSK2.createReceiver({
     plugin,
@@ -50,7 +58,10 @@ async function run () {
       if (invoice.balance >= invoice.amount && invoice.webhook) {
         fetch(invoice.webhook, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
           body: JSON.stringify({
             balance: invoice.balance,
             amount: invoice.amount,
@@ -93,7 +104,7 @@ async function run () {
     }
   })
 
-  router.post('/', async ctx => {
+  router.post('/', authorize, async ctx => {
     const { amount, reason, webhook } = ctx.request.body
     const invoice = new Invoice({ amount, reason, webhook })
 
