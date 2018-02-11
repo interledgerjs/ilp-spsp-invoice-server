@@ -21,7 +21,7 @@ class App {
   async listen () {
     const app = this.koa
     const router = this.router
-    const { port, localtunnel, subdomain } = this.config
+    const { port, localtunnel } = this.config
 
     if (localtunnel) {
       await this.localtunnel.listen()

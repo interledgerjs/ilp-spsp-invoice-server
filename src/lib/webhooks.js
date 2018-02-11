@@ -20,7 +20,7 @@ class Webhooks {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        'Authorization': 'Bearer ' + this.config.token
       },
       body: JSON.stringify({
         balance: invoice.balance,

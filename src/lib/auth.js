@@ -8,13 +8,13 @@ class Auth {
 
   getMiddleware () {
     return async (ctx, next) => {
-      const [ , token ] = ctx.get('authorization').match(/Bearer (.+)/) || []  
+      const [ , token ] = ctx.get('authorization').match(/Bearer (.+)/) || []
 
       debug('checking auth token. given=' + token,
         'token=' + this.config.token,
         'eq=' + (token === this.config.token))
 
-      // TODO: use something like JWT 
+      // TODO: use something like JWT
       if (token !== this.config.token) {
         return ctx.throw(401, 'Invalid token')
       }
