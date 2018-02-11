@@ -20,11 +20,11 @@ class Receiver {
     this.receiver = await PSK2.createReceiver({
       plugin: this.plugin,
       paymentHandler: async params => {
-        const amount = params.amount
-        const id = params.prepare.destination.split('.').slice(-2)[0]
+        const amount = params.prepare.amount
+        const id = params.prepare.destination.split('.').slice(-3)[0]
 
         // this will throw if the invoice has been paid already
-        debug('got packet. amount=' + amount, 'invoice=' + invoiceId)
+        debug('got packet. amount=' + amount, 'invoice=' + id)
         const paid = await this.invoices.pay({ id, amount })
 
         if (paid) {
@@ -34,7 +34,7 @@ class Receiver {
             })
         }
 
-        return params.accept()
+        return params.acceptSingleChunk()
       }
     })
   }
