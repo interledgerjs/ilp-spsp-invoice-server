@@ -3,6 +3,10 @@
 
 - [Usage](#usage)
 - [Environment Variables](#environment-variables)
+- [API](#api)
+  - [Create an Invoice](#create-an-invoice)
+  - [Query an Invoice](#query-an-invoice)
+  - [Webhooks](#webhooks)
 
 ## Usage
 
@@ -58,3 +62,47 @@ ilp-spsp query -r "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d
 | `SPSP_DB_PATH` | | Path for leveldb database. Uses in-memory database if unspecified. |
 | `SPSP_AUTH_TOKEN` | `test` | Bearer token for creating invoices and receiving webhooks. |
 | `SPSP_HOST` | localhost or localtunnel | Host to include in payment pointers |
+
+## API
+
+### Create an Invoice
+
+```http
+POST /
+```
+
+Create an invoice.
+
+#### Request
+
+- `amount` - Invoice amount in base ledger units.
+- `reason` - Reason for invoice. Returned in payment pointer response.
+- `webhook` - (Optional) Webhook to `POST` to after the invoice is fully paid. See [Webhooks](#webhooks)
+
+#### Response
+
+- `receiver` - Payment pointer of the SPSP receiver created for this invoice.
+
+### Query an Invoice
+
+```http
+GET /:invoice_id
+```
+
+SPSP receiver endpoint for the invoice with `:invoice_id`. The payment pointer
+returned by [Create an Invoice](#create-an-invoice) resolves to this endpoint.
+
+### Webhooks
+
+When you [Create an Invoice](#create-an-invoice) and specify a webhook, it will
+call the specified webhook when the invoice is paid. The request is a `POST` with
+
+```http
+Authorization: Bearer <SPSP_AUTH_TOKEN>
+
+{
+  "balance": 1000000,
+  "amount": 1000000,
+  "pointer": "$localhost:6000/1b6cf71a-f465-43f2-bd69-92f66defbaf7",
+}
+```
