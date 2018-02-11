@@ -1,4 +1,5 @@
 const localtunnel = require('localtunnel')
+const debug = require('debug')('ilp-spsp-invoice:localtunnel')
 
 const Config = require('../lib/config')
 
@@ -8,12 +9,16 @@ class Localtunnel {
   }
 
   async listen () {
+    debug('creating localtunnel')
     return new Promise((resolve, reject) => {
       localtunnel(this.config.port, {
-        subdomain: this.config.env.SUBDOMAIN
+        subdomain: this.config.subdomain
       }, (err, tunnel) => {
         if (err) reject(err)
-        else resolve()
+        else {
+          debug('created localtunnel. url=' + tunnel.url)
+          resolve()
+        }
       })
     })
   }
