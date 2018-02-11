@@ -2,14 +2,16 @@
 > Example of an SPSP server that supports invoices
 
 - [Usage](#usage)
+- [Environment Variables](#environment-variables)
 
 ## Usage
 
 ```sh
-SUBDOMAIN=mysubdomain node index.js
+SPSP_LOCALTUNNEL=true SPSP_LOCALTUNNEL_SUBDOMAIN=mysubdomain node index.js
 
 # creates an invoice for 10 XRP; the sender will use a chunked payment
-http POST mysubdomain.localtunnel.me amount=10000000 reason="you bought something"
+http POST mysubdomain.localtunnel.me amount=10000000 reason="you bought something" \
+  Authorization:"Bearer test"
 # {
 #  "receiver": "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d525"
 # }
@@ -45,3 +47,14 @@ ilp-spsp query -r "$mysubdomain.localtunnel.me/ef6e2a39-ba3c-a5cc-0849-9730ed56d
 #   }
 # } 
 ```
+
+## Environment Variables
+
+| Name | Default | Description |
+|:---|:---|:---|
+| `SPSP_PORT` | `6000` | port to listen on locally. |
+| `SPSP_LOCALTUNNEL` | | If this variable is defined, `SPSP_PORT` will be proxied by localtunnel under `SPSP_LOCALTUNNEL_SUBDOMAIN`. |
+| `SPSP_LOCALTUNNEL_SUBDOMAIN` | | Subdomain to forward `SPSP_PORT` to. Must be defined if you set `SPSP_LOCALTUNNEL` |
+| `SPSP_DB_PATH` | | Path for leveldb database. Uses in-memory database if unspecified. |
+| `SPSP_AUTH_TOKEN` | `test` | Bearer token for creating invoices and receiving webhooks. |
+| `SPSP_HOST` | localhost or localtunnel | Host to include in payment pointers |
