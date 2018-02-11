@@ -15,13 +15,13 @@ class Receiver {
   }
 
   async listen () {
-    await plugin.connect()
+    await this.plugin.connect()
 
     this.receiver = await PSK2.createReceiver({
-      this.plugin,
+      plugin: this.plugin,
       paymentHandler: async params => {
         const amount = params.amount
-        const id = params.prepare.destination.split('.').slice(-3)[0]
+        const id = params.prepare.destination.split('.').slice(-2)[0]
 
         // this will throw if the invoice has been paid already
         debug('got packet. amount=' + amount, 'invoice=' + invoiceId)
@@ -43,3 +43,5 @@ class Receiver {
     return this.receiver.generateAddressAndSecret()
   }
 }
+
+module.exports = Receiver

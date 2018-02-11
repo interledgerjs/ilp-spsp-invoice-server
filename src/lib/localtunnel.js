@@ -18,3 +18,5 @@ class Localtunnel {
     })
   }
 }
+
+module.exports = Localtunnel

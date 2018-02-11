@@ -66,3 +66,5 @@ class InvoiceModel {
     }
   }
 }
+
+module.exports = InvoiceModel

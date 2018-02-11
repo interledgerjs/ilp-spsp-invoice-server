@@ -14,7 +14,7 @@ class App {
     this.router = deps(Router)
     this.localtunnel = deps(Localtunnel)
 
-    this.paymentPointer = deps(PaymentPointer)
+    this.paymentPointer = deps(PaymentPointerController)
     this.invoices = deps(InvoiceController)
   }
 
@@ -33,5 +33,8 @@ class App {
     app.use(BodyParser())
     app.use(router.routes())
     app.use(router.allowedMethods())
+    app.listen(port)
   }
 }
+
+module.exports = App

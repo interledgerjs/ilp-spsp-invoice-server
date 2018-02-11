@@ -30,3 +30,5 @@ class Webhooks {
     })
   }
 }
+
+module.exports = Webhooks
