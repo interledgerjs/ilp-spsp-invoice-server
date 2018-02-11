@@ -11,7 +11,7 @@
 ## Usage
 
 ```sh
-SPSP_LOCALTUNNEL=true SPSP_LOCALTUNNEL_SUBDOMAIN=mysubdomain node index.js
+SPSP_LOCALTUNNEL=true SPSP_LOCALTUNNEL_SUBDOMAIN=mysubdomain npm start
 
 # creates an invoice for 10 XRP; the sender will use a chunked payment
 http POST mysubdomain.localtunnel.me amount=10000000 reason="you bought something" \
