@@ -1,5 +1,5 @@
 # ILP SPSP Invoice Server
-> Example of an SPSP server that supports invoices
+> SPSP server that supports invoices
 
 - [Usage](#usage)
 - [Environment Variables](#environment-variables)
