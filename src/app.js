@@ -24,10 +24,7 @@ class App {
     const { port, localtunnel, subdomain } = this.config
 
     if (localtunnel) {
-      await this.localtunnel.listen({
-        port,
-        subdomain
-      })
+      await this.localtunnel.listen()
     }
 
     await this.paymentPointer.init(router)

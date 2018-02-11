@@ -35,6 +35,7 @@ class InvoiceModel {
       paid = true
     }
 
+    // TODO: debounce instead of writeQueue
     this.balanceCache.set(id, newBalance)
     this.writeQueue = this.writeQueue.then(async () => {
       const loaded = await this.get(id)
