@@ -2,6 +2,7 @@ const uuid = require('uuid')
 const levelup = require('levelup')
 const leveldown = require('leveldown')
 const memdown = require('memdown')
+const BigNumber = require('bignumber.js')
 
 const Config = require('../lib/config')
 
@@ -23,23 +24,23 @@ class InvoiceModel {
       this.balanceCache.set(id, invoice.balance)
     }
 
-    const balance = this.balanceCache.get(id)
-    const newBalance = balance + amount
+    const balance = new BigNumber(this.balanceCache.get(id))
+    const newBalance = balance.plus(amount)
 
-    if (balance > invoice.amount) {
+    if (balance.gt(invoice.amount)) {
       throw new Error('This invoice has been paid')
     }
 
     let paid = false
-    if (newBalance > invoice.amount) {
+    if (newBalance.gt(invoice.amount)) {
       paid = true
     }
 
     // TODO: debounce instead of writeQueue
-    this.balanceCache.set(id, newBalance)
+    this.balanceCache.set(id, newBalance.toString())
     this.writeQueue = this.writeQueue.then(async () => {
       const loaded = await this.get(id)
-      loaded.balance = newBalance
+      loaded.balance = newBalance.toString()
       return this.db.put(id, JSON.stringify(loaded))
     })
 
