@@ -27,13 +27,17 @@ class InvoiceModel {
     const balance = new BigNumber(this.balanceCache.get(id))
     const newBalance = balance.plus(amount)
 
-    if (balance.gt(invoice.amount)) {
+    if (new BigNumber(invoice.amount).gt(0)
+      ? balance.gt(invoice.amount)
+      : balance.lt(invoice.amount)) {
       throw new Error('This invoice has been paid')
     }
 
     let paid = false
-    if (newBalance.gt(invoice.amount)) {
-      paid = true
+    if (new BigNumber(invoice.amount).gt(0)
+      ? newBalance.gt(invoice.amount)
+      : newBalance.lt(invoice.amount)) {
+        paid = true
     }
 
     // TODO: debounce instead of writeQueue

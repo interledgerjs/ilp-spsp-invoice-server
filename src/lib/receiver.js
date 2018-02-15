@@ -1,5 +1,6 @@
-const PSK2 = require('ilp-protocol-psk2')
+const { PaymentServer } = require('ilp-protocol-paystream')
 const debug = require('debug')('ilp-spsp-invoice:receiver')
+const crypto = require('crypto')
 
 const Config = require('../lib/config')
 const Webhooks = require('../lib/webhooks')
@@ -17,30 +18,29 @@ class Receiver {
   async listen () {
     await this.plugin.connect()
 
-    this.receiver = await PSK2.createReceiver({
-      plugin: this.plugin,
-      paymentHandler: async params => {
-        const amount = params.prepare.amount
-        const id = params.prepare.destination.split('.').slice(-3)[0]
-
-        // this will throw if the invoice has been paid already
-        debug('got packet. amount=' + amount, 'invoice=' + id)
-        const paid = await this.invoices.pay({ id, amount })
-
-        if (paid) {
-          this.webhooks.call({ id })
-            .catch(e => {
-              debug('failed to call webhook. error=', e)
-            })
-        }
-
-        return params.acceptSingleChunk()
-      }
-    })
+    this.receiver = new PaymentServer(this.plugin, crypto.randomBytes(32))
+    await this.receiver.connect()
   }
 
-  generateAddressAndSecret () {
-    return this.receiver.generateAddressAndSecret()
+  getSocket (id) {
+    const socket = this.receiver.createSocket({
+      enableRefunds: true
+    })
+
+    socket.on('incoming_chunk', async amount => {
+      // this will throw if the invoice has been paid already
+      debug('got packet. amount=' + amount, 'invoice=' + id)
+      const paid = await this.invoices.pay({ id, amount })
+
+      if (paid) {
+        this.webhooks.call({ id })
+          .catch(e => {
+            debug('failed to call webhook. error=', e)
+          })
+      }
+    })
+
+    return socket 
   }
 }
 

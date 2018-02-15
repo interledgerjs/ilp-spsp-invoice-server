@@ -11,7 +11,7 @@ class PaymentPointerController {
     await this.receiver.listen()
 
     router.get('/:invoice_id', async ctx => {
-      if (ctx.get('Accept').indexOf('application/spsp+json') === -1) {
+      if (ctx.get('Accept').indexOf('application/spsp4+json') === -1) {
         return ctx.throw(404)
       }
 
@@ -20,26 +20,23 @@ class PaymentPointerController {
         return ctx.throw(404, 'Invoice not found')
       }
 
-      const { destinationAccount, sharedSecret } =
-        this.receiver.generateAddressAndSecret()
-
-      const segments = destinationAccount.split('.')
-      const resultAccount = segments.slice(0, -2).join('.') +
-        '.' + ctx.params.invoice_id +
-        '.' + segments.slice(-2).join('.')
+      const socket = this.receiver.getSocket(ctx.params.invoice_id)
+      socket.setMinAndMaxBalance(invoice.amount - invoice.balance)
 
       ctx.set('Content-Type', 'application/spsp+json')
       ctx.body = {
-        destination_account: resultAccount,
-        shared_secret: sharedSecret,
+        destination_account: socket.destinationAccount,
+        shared_secret: socket.sharedSecret,
         balance: {
           current: String(invoice.balance),
-          maximum: String(invoice.amount)
         },
         receiver_info: {
           reason: invoice.reason
         }
       }
+
+      ctx.body.balance[ invoice.amount < 0 ? 'minimum' : 'maximum' ] =
+        String(invoice.amount)
     })
   }
 }
