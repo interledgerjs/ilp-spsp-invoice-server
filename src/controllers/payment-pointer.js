@@ -31,7 +31,7 @@ class PaymentPointerController {
       ctx.set('Content-Type', 'application/spsp+json')
       ctx.body = {
         destination_account: resultAccount,
-        shared_secret: sharedSecret,
+        shared_secret: sharedSecret.toString('base64'),
         balance: {
           current: String(invoice.balance),
           maximum: String(invoice.amount)
