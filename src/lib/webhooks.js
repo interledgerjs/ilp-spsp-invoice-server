@@ -9,7 +9,7 @@ class Webhooks {
     this.invoices = deps(InvoiceModel)
   }
 
-  async call (id) {
+  async call ({ id }) {
     const invoice = await this.invoices.get(id)
 
     if (!invoice.webhook) {

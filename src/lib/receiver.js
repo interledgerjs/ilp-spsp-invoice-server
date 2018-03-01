@@ -18,7 +18,10 @@ class Receiver {
   async listen () {
     await this.plugin.connect()
 
-    this.receiver = new PaymentServer(this.plugin, crypto.randomBytes(32))
+    this.receiver = new PaymentServer({
+      plugin: this.plugin,
+      secret: crypto.randomBytes(32)
+    })
     await this.receiver.connect()
   }
 
