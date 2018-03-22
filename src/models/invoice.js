@@ -25,14 +25,14 @@ class InvoiceModel {
     }
 
     const balance = new BigNumber(this.balanceCache.get(id))
-    const newBalance = balance.plus(amount)
+    const newBalance = BigNumber.min(balance.plus(amount), invoice.amount)
 
-    if (balance.gt(invoice.amount)) {
+    if (balance.isEqualTo(invoice.amount)) {
       throw new Error('This invoice has been paid')
     }
 
     let paid = false
-    if (newBalance.gt(invoice.amount)) {
+    if (newBalance.isEqualTo(invoice.amount)) {
       paid = true
     }
 
