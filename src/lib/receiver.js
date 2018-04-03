@@ -1,5 +1,6 @@
-const PSK2 = require('ilp-protocol-psk2')
+const STREAM = require('ilp-protocol-stream')
 const debug = require('debug')('ilp-spsp-invoice:receiver')
+const crypto = require('crypto')
 
 const Config = require('../lib/config')
 const Webhooks = require('../lib/webhooks')
@@ -16,6 +17,19 @@ class Receiver {
 
   async listen () {
     await this.plugin.connect()
+
+    this.server = new STREAM.Server({
+      plugin: this.plugin,
+      serverSecret: crypto.randomBytes(32)
+    })
+
+    server.on('connection', connection => {
+      connection.on('money_stream', stream => {
+
+      })
+    })
+
+    await this.server.listen()
 
     this.receiver = await PSK2.createReceiver({
       plugin: this.plugin,
