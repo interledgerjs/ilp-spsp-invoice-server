@@ -20,17 +20,13 @@ class PaymentPointerController {
         return ctx.throw(404, 'Invoice not found')
       }
 
+      const id = ctx.params.invoice_id
       const { destinationAccount, sharedSecret } =
-        this.receiver.generateAddressAndSecret()
-
-      const segments = destinationAccount.split('.')
-      const resultAccount = segments.slice(0, -2).join('.') +
-        '.' + ctx.params.invoice_id +
-        '.' + segments.slice(-2).join('.')
+        this.receiver.generateAddressAndSecret(id)
 
       ctx.set('Content-Type', 'application/spsp+json')
       ctx.body = {
-        destination_account: resultAccount,
+        destination_account: destinationAccount,
         shared_secret: sharedSecret,
         balance: {
           current: String(invoice.balance),
