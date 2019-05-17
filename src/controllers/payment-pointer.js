@@ -1,17 +1,17 @@
 const InvoiceModel = require('../models/invoice')
-const Receiver = require('../lib/receiver')
+const Server = require('../lib/server')
 
 class PaymentPointerController {
   constructor (deps) {
     this.invoices = deps(InvoiceModel)
-    this.receiver = deps(Receiver)
+    this.server = deps(Server)
   }
 
   async init (router) {
-    await this.receiver.listen()
+    await this.server.listen()
 
     router.get('/:invoice_id', async ctx => {
-      if (ctx.get('Accept').indexOf('application/spsp+json') === -1) {
+      if (ctx.get('Accept').indexOf('application/spsp4+json') === -1) {
         return ctx.throw(404)
       }
 
@@ -21,25 +21,24 @@ class PaymentPointerController {
       }
 
       const { destinationAccount, sharedSecret } =
-        this.receiver.generateAddressAndSecret()
+        this.server.generateAddressAndSecret(ctx.params.invoice_id)
 
-      const segments = destinationAccount.split('.')
-      const resultAccount = segments.slice(0, -2).join('.') +
-        '.' + ctx.params.invoice_id +
-        '.' + segments.slice(-2).join('.')
-
-      ctx.set('Content-Type', 'application/spsp+json')
       ctx.body = {
-        destination_account: resultAccount,
+        destination_account: destinationAccount,
         shared_secret: sharedSecret,
-        balance: {
-          current: String(invoice.balance),
-          maximum: String(invoice.amount)
-        },
-        receiver_info: {
-          reason: invoice.reason
+        push: {
+          balance: String(invoice.balance),
+          invoice: {
+            amount: String(invoice.amount),
+            asset: {
+              code: invoice.assetCode,
+              scale: invoice.assetScale
+            },
+            additional_fields: invoice.additionalFields
+          }
         }
       }
+      ctx.set('Content-Type', 'application/spsp4+json')
     })
   }
 }

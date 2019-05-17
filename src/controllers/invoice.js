@@ -11,9 +11,9 @@ class InvoiceController {
   async init (router) {
     router.post('/', this.auth.getMiddleware(), async ctx => {
       debug('creating invoice')
-      const { amount, reason, webhook } = ctx.request.body
-      const { receiver } = await this.invoices.create({ amount, reason, webhook })
-      ctx.body = { receiver }
+      const { amount, assetCode, assetScale, webhook, ...additionalFields } = ctx.request.body
+      const { invoice } = await this.invoices.create({ amount, assetCode, assetScale, webhook, additionalFields })
+      ctx.body = { invoice }
     })
   }
 }
