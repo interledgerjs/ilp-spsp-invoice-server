@@ -25,7 +25,7 @@ class PaymentPointerController {
 
       ctx.body = {
         destination_account: destinationAccount,
-        shared_secret: sharedSecret,
+        shared_secret: sharedSecret.toString('base64'),
         push: {
           balance: String(invoice.balance),
           invoice: {
