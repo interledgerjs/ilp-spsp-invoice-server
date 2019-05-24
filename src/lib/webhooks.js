@@ -25,7 +25,7 @@ class Webhooks {
       body: JSON.stringify({
         balance: invoice.balance,
         amount: invoice.amount,
-        pointer: invoice.pointer()
+        pointer: '$' + this.config.host + '/' + id
       })
     })
   }
