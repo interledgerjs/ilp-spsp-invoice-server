@@ -13,7 +13,7 @@ var assetScale = 2
 var webhook = 'http://example.com'
 var additionalFields = {
   test: 'test'
-} 
+}
 
 describe('Invoice', function () {
   beforeEach(function () {
@@ -31,7 +31,7 @@ describe('Invoice', function () {
         webhook,
         additionalFields
       }
-      let output = await invoice.create({amount, assetCode, assetScale, webhook, additionalFields})
+      let output = await invoice.create({ amount, assetCode, assetScale, webhook, additionalFields })
       let retrieval = JSON.parse(await invoice.db.get(output.id))
       assert(JSON.stringify(retrieval) === JSON.stringify(expectedOutput))
     })
@@ -39,10 +39,10 @@ describe('Invoice', function () {
   describe('.pay()', function () {
     var id
     beforeEach(async function () {
-      output = await invoice.create({amount, assetCode, assetScale, webhook, additionalFields})
+      let output = await invoice.create({ amount, assetCode, assetScale, webhook, additionalFields })
       id = output.id
     })
-    it('should adjust the balance', async function() {
+    it('should adjust the balance', async function () {
       let amount = 50
       let expectedOutput = {
         balance: '50',
@@ -52,20 +52,20 @@ describe('Invoice', function () {
         webhook,
         additionalFields
       }
-      await invoice.pay({id, amount})
+      await invoice.pay({ id, amount })
       await invoice.writeQueue
       let retrieval = JSON.parse(await invoice.db.get(id))
       assert(JSON.stringify(retrieval) === JSON.stringify(expectedOutput))
     })
     it('should not be paid', async function () {
       let amount = 50
-      let output = await invoice.pay({id, amount})
-      assert (output === false)
+      let output = await invoice.pay({ id, amount })
+      assert(output === false)
     })
     it('should be paid', async function () {
       let amount = 100
-      let output = await invoice.pay({id, amount})
-      assert (output === true)
+      let output = await invoice.pay({ id, amount })
+      assert(output === true)
     })
     it('should not be overpaid', async function () {
       let amount = 110
@@ -77,7 +77,7 @@ describe('Invoice', function () {
         webhook,
         additionalFields
       }
-      await invoice.pay({id, amount})
+      await invoice.pay({ id, amount })
       await invoice.writeQueue
       let retrieval = JSON.parse(await invoice.db.get(id))
       assert(JSON.stringify(retrieval) === JSON.stringify(expectedOutput))
