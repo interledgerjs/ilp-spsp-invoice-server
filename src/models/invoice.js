@@ -55,8 +55,8 @@ class InvoiceModel {
     const id = uuid()
 
     await this.db.put(id, JSON.stringify({
-      balance: 0,
-      amount,
+      balance: String(0),
+      amount: String(amount),
       assetCode,
       assetScale,
       webhook,
