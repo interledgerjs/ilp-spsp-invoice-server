@@ -6,33 +6,42 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bignumber.js": "^6.0.0",
-    "chalk": "^2.3.0",
-    "get-port": "^3.2.0",
-    "ilp-plugin": "^3.1.0",
-    "ilp-protocol-psk2": "^0.2.1",
-    "koa": "^2.4.1",
-    "koa-bodyparser": "^4.2.0",
+    "bignumber.js": "^8.1.1",
+    "debug": "^4.1.1",
+    "ilp-exchange-rate": "^0.1.1",
+    "ilp-plugin": "^3.2.1",
+    "ilp-price": "^1.0.1",
+    "ilp-protocol-stream": "^1.8.9",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "leveldown": "^3.0.0",
-    "levelup": "^2.0.1",
-    "localtunnel": "^1.8.3",
-    "memdown": "^1.4.1",
-    "node-fetch": "^2.0.0",
-    "reduct": "^3.2.0",
-    "uuid": "^3.2.1"
+    "leveldown": "^5.0.3",
+    "levelup": "^4.0.1",
+    "localtunnel": "^1.9.1",
+    "memdown": "^4.0.0",
+    "node-fetch": "^2.5.0",
+    "reduct": "^3.3.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "eslint": "^4.17.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^6.0.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^6.1.4",
+    "standard": "^12.0.1"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
   }
 }

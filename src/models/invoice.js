@@ -51,19 +51,21 @@ class InvoiceModel {
     return JSON.parse(await this.db.get(id))
   }
 
-  async create ({ amount, reason, webhook }) {
+  async create ({ amount, assetCode, assetScale, webhook, additionalFields }) {
     const id = uuid()
 
     await this.db.put(id, JSON.stringify({
-      balance: 0,
-      amount,
-      reason,
-      webhook
+      balance: String(0),
+      amount: String(amount),
+      assetCode,
+      assetScale,
+      webhook,
+      additionalFields
     }))
 
     return {
       id,
-      receiver: '$' + this.config.host + '/' + id
+      invoice: '$' + this.config.host + '/' + id
     }
   }
 }
