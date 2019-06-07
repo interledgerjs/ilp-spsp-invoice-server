@@ -4,7 +4,7 @@ const crypto = require('crypto')
 const debug = require('debug')('ilp-spsp-invoice:server')
 
 const Config = require('./config')
-const Exchange = require('./exchange')
+const Exchange = require('ilp-exchange-rate')
 const Webhooks = require('./webhooks')
 const InvoiceModel = require('../models/invoice')
 
@@ -12,7 +12,6 @@ class Server {
   constructor (deps) {
     this.config = deps(Config)
     this.invoices = deps(InvoiceModel)
-    this.exchange = deps(Exchange)
     this.webhooks = deps(Webhooks)
     this.plugin = this.config.plugin
     this.server = null
@@ -31,7 +30,7 @@ class Server {
       const invoice = await this.invoices.get(id)
 
       connection.on('stream', async (stream) => {
-        const exchangeRate = await this.exchange.fetchRate(invoice.assetCode, invoice.assetScale, this.server.serverAssetCode, this.server.serverAssetScale)
+        const exchangeRate = await Exchange.fetchRate(invoice.assetCode, invoice.assetScale, this.server.serverAssetCode, this.server.serverAssetScale)
         if (exchangeRate) {
           const receivable = Math.ceil((invoice.amount - invoice.balance) * exchangeRate)
           stream.setReceiveMax(receivable)
@@ -43,9 +42,9 @@ class Server {
 
             if (paid) {
               this.webhooks.call(id)
-              .catch(e => {
-                debug('failed to call webhook. error=', e)
-              })
+                .catch(e => {
+                  debug('failed to call webhook. error=', e)
+                })
             }
           })
         }

@@ -13,6 +13,7 @@
   "dependencies": {
     "bignumber.js": "^8.1.1",
     "debug": "^4.1.1",
+    "ilp-exchange-rate": "^0.1.1",
     "ilp-plugin": "^3.2.1",
     "ilp-price": "^1.0.1",
     "ilp-protocol-stream": "^1.8.9",
